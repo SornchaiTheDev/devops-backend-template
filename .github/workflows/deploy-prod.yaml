@@ -40,9 +40,9 @@ jobs:
           - name: 'Checkout'
             uses: 'actions/checkout@v4'
             with:
-              repository: SornchaiTheDev/k8s-manifest
+              repository: SornchaiTheDev/devops-k8s-manifest
               token: ${{ secrets.GH_PAT }}
-              path: k8s-manifest
+              path: devops-k8s-manifest
 
           - name: Get the version from GITHUB_REF
             id: version
@@ -53,13 +53,13 @@ jobs:
           - name: Update version in vars.json
             run: |
               echo "Updating version in vars.json in namespace ${{ env.NAMESPACE }} to $VERSION"
-              jq --arg VERSION "$VERSION" --arg NAMESPACE "${{ env.NAMESPACE }}" '.["${{ env.NAMESPACE }}"].version = $VERSION' k8s-manifest/projects/gitops-demo-backend/vars/vars.json > tmp.json && mv tmp.json k8s-manifest/projects/gitops-demo-backend/vars/vars.json
+              jq --arg VERSION "$VERSION" --arg NAMESPACE "${{ env.NAMESPACE }}" '.["${{ env.NAMESPACE }}"].version = $VERSION' devops-k8s-manifest/projects/gitops-demo-backend/vars/vars.json > tmp.json && mv tmp.json devops-k8s-manifest/projects/gitops-demo-backend/vars/vars.json
 
-          - name: Commit changes to k8s-minifest
+          - name: Commit changes to devops-k8s-minifest
             run: |
-              cd k8s-manifest
+              cd devops-k8s-manifest
               git config --global user.name "github-actions"
               git config --global user.email "github-actions@github.com"
               git add projects/gitops-demo-backend/vars/vars.json
               git commit -m "Update version ${{ env.APP_NAME }} in namespace ${{ env.NAMESPACE }} to $VERSION"
-              git push SornchaiTheDev/k8s-manifest.git HEAD:main
+              git push SornchaiTheDev/devops-k8s-manifest.git HEAD:main
